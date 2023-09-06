@@ -1,0 +1,71 @@
+USE [Makai]
+GO
+/****** Object:  StoredProcedure [dbo].[Appointments_Update]    Script Date: 3/16/2023 4:02:27 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author: Johnson, Jonathon
+-- Create date: 02/27/2023
+
+-- Description: Updates any/all columns, i.e., Phone, StartDateTime, Time, and/or ModifiedBy columns, for specific record (by Id column) from [dbo].[Appointments]
+
+-- Code Reviewer:
+
+-- MODIFIED BY:
+-- MODIFIED DATE: 03/10/2023
+-- Code Reviewer:
+-- Note: StartDateTime no longer has a default value of GETUTCDATE() --> now must be included in insert/update procs
+-- =============================================
+
+--CREATE PROC [dbo].[Appointments_Update]
+
+CREATE PROC [dbo].[Appointments_Update]
+	 @Phone nvarchar(50) = NULL
+	,@StartDateTime datetime2(7)
+	,@Time time(7)
+	,@ModifiedBy int
+  ,@Id int
+
+/*TEST CODE (run this execute section to test out proc without accessing execute file)
+
+DECLARE @Id int = 1;
+
+DECLARE @Phone nvarchar(50) = '9876540123'
+	   ,@StartDateTime datetime2(7) = '2023-03-10 09:30:00.0000000'
+	   ,@Time time(7) = '01:00:00'
+	   ,@ModifiedBy int = 8
+
+SELECT *
+FROM [dbo].[Appointments]
+WHERE [Id] = @Id;
+
+EXECUTE [dbo].[Appointments_Update]
+						  @Phone
+						 ,@StartDateTime
+						 ,@Time
+						 ,@ModifiedBy
+						 ,@Id
+SELECT *
+FROM [dbo].[Appointments]
+WHERE [Id] = @Id;
+
+*/
+
+AS 
+
+BEGIN
+
+DECLARE @DateNow datetime2(7) = GETUTCDATE();
+
+	UPDATE [dbo].[Appointments]
+	SET [Phone] = @Phone
+	   ,[StartDateTime] = @StartDateTime
+	   ,[Time] = @Time
+	   ,[ModifiedBy] = @ModifiedBy
+	   ,[DateModified] = @DateNow
+	WHERE [Id] = @Id
+
+END;
+GO
